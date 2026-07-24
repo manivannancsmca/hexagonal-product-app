@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # 1. Production MySQL Storage Layer
+  
+  product-db:
+    image: mysql:8.0
+    container_name: product-db
+    restart: unless-stopped
+    ports:
+      - "3311:3306" # Your app on localhost will connect to port 3311
+    environment:
+      - MYSQL_ROOT_PASSWORD=prod_root_secure_pass_99
+      - MYSQL_USER=appuser
+      - MYSQL_PASSWORD=apppassword
+      - MYSQL_DATABASE=product_db
+    volumes:
+      - product_db_data:/var/lib/mysql
+      - ./infrastructure/mysql_config:/etc/mysql/conf.d # Keeps your custom configuration organized
+    command: --default-authentication-plugin=mysql_native_password --binlog-format=ROW --binlog-row-image=FULL
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pprod_root_secure_pass_99"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+      - microservice-network
+
+  # 2. Apache Kafka Controller/Broker (KRaft Mode)
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    container_name: kafka-kraft-broker
+    restart: unless-stopped
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+      KAFKA_NUM_PARTITIONS: 16
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_LOG_RETENTION_HOURS: 72
+      KAFKA_LOG_SEGMENT_BYTES: 1073741824
+    volumes:
+      - kafka_production_data:/var/lib/kafka/data
+    networks:
+      - microservice-network
+
+  # 5. Isolated Kafka UI Management Dashboard
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-management-ui
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'false'
+      KAFKA_CLUSTERS_0_NAME: production-kraft-cluster
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+      KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: debezium-cluster
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://debezium-connect:8083
+    networks:
+      - microservice-network
+
+volumes:
+  product_db_data:
+  kafka_production_data:
+networks:
+  microservice-network:
+    driver: bridge
