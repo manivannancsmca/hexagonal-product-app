@@ -1,0 +1,55 @@
+### Create Product 1: Wireless Mouse
+POST http://localhost:8011/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Logitech MX Master 3S",
+  "quantity": 150,
+  "price": 99.99
+}
+
+### Create Product 2: Mechanical Keyboard
+POST http://localhost:8011/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Keychron Q1 Pro",
+  "quantity": 75,
+  "price": 199.00
+}
+
+### Create Product 3: USB-C Hub
+POST http://localhost:8011/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Anker 7-in-1 USB-C Hub",
+  "quantity": 300,
+  "price": 34.99
+}
+
+### Create Product 4: 4K Monitor
+POST http://localhost:8011/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Dell UltraSharp U2723QE",
+  "quantity": 45,
+  "price": 539.50
+}
+
+### Create Product 5: Noise Cancelling Headphones
+POST http://localhost:8011/api/v1/products
+Content-Type: application/json
+
+{
+  "name": "Sony WH-1000XM5",
+  "quantity": 120,
+  "price": 348.00
+}
+
+### Get Product by ID (replace {id} with actual ID from POST responses)
+GET http://localhost:8011/api/v1/products/1
+
+### Get All Products
+GET http://localhost:8011/api/v1/products
