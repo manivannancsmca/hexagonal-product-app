@@ -1,6 +1,8 @@
 package com.hexagonal_service.domain.port.outbound;
 
-public class ProductEventPublisherPort {
+import com.hexagonal_service.domain.model.Product;
 
+public interface ProductEventPublisherPort {
+    void publishProductCreated(Product product);
 }
 
