@@ -55,7 +55,7 @@ services:
     networks:
       - microservice-network
 
-  # 5. Isolated Kafka UI Management Dashboard
+  # 3. Isolated Kafka UI Management Dashboard
   kafka-ui:
     image: provectuslabs/kafka-ui:latest
     container_name: kafka-management-ui
@@ -73,6 +73,17 @@ services:
       KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: http://debezium-connect:8083
     networks:
       - microservice-network
+
+  postgres:
+    image: postgres:16
+    container_name: product-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: product_db
+    ports:
+      - "5432:5432"
+
 
 volumes:
   product_db_data:
