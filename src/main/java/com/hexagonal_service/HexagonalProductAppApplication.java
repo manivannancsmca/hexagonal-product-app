@@ -6,9 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication(scanBasePackages = {
     "com.hexagonal_service.domain",
     "com.hexagonal_service.application",
-    "com.hexagonal_service.infrastructure.adapter.in",
-    "com.hexagonal_service.infrastructure.adapter.out.messaging",
-    "com.hexagonal_service.infrastructure.config"
+    "com.hexagonal_service.infrastructure"
 })
 public class HexagonalProductAppApplication {
 
