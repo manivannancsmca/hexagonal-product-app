@@ -6,7 +6,8 @@ spring:
     name: hexagonal-product-app
 
   profiles:
-    active: mysql,rest-outbound  # Default: MySQL + REST notifications
+    active: mysql  # Default: MySQL + REST notifications
+    
   datasource:
     url: jdbc:mysql://localhost:3311/product_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: appuser
