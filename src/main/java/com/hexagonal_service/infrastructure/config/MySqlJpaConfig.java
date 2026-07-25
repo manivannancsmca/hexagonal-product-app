@@ -1,0 +1,13 @@
+package com.hexagonal_service.infrastructure.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
+@Configuration
+@Profile("mysql")
+@EnableJpaRepositories(basePackages = "com.hexagonal_service.infrastructure.adapter.out.persistence.mysql")
+@EntityScan(basePackages = "com.hexagonal_service.infrastructure.adapter.out.persistence.mysql")
+public class MySqlJpaConfig {
+}
