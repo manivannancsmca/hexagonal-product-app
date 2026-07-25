@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.hexagonal_service.domain.model.Product;
+import com.hexagonal_service.domain.port.inbound.ProductServicePort;
 import com.hexagonal_service.infrastructure.adapter.in.rest.dto.CreateProductRequest;
 import com.hexagonal_service.infrastructure.adapter.in.rest.dto.ProductResponse;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final com.hexagonal_service.domain.port.inbound.ProductServicePort productService;
+    private final ProductServicePort productService;
 
     @PostMapping
     public ResponseEntity<ProductResponse> create(@RequestBody CreateProductRequest request) {

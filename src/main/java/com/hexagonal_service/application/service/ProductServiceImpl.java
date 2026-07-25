@@ -25,6 +25,7 @@ public class ProductServiceImpl implements ProductServicePort  {
 
     @Override
     public Product createProduct(String name, Integer quantity, BigDecimal price) {
+        log.info("product created functionality calling");
         Product product = new Product(null, name, quantity, price);
         Product saved = productRepository.save(product);
         eventPublisher.publishProductCreated(saved);
